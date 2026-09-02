@@ -1,0 +1,133 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  width: 100vw;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background-image: url('assets/images/mapa.webp');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  overflow-x: hidden;
+  text-align: center;
+}
+
+
+
+
+
+
+#div-logo-instalar {
+  position: relative;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-direction: column;
+  gap: 50px;
+  width: 100vw;
+  height: 90svh;
+  z-index: 100;
+  margin-top: 20px;
+  
+  & #logo {
+    width: 300px;
+    filter: drop-shadow(0px 0px 10px #fff)
+  }
+  
+  & #install {
+    text-decoration: none;
+    border-radius: 1000px;
+    padding: 30px;
+    background-color: #064579;
+    color: #fff;
+    font-size: 20px;
+    animation: installAnimation 2s infinite;
+  }
+}
+
+main {
+  position: relative;
+  width: 100vw;
+  background-color: #fffa;
+  backdrop-filter: blur(5px);
+  box-shadow: 0px 0px 10px 5px #0008;
+  padding: 20px;
+  z-index: 100;
+  margin: 0 auto;
+
+  & h1 {
+    margin-bottom: 20px;
+  }
+
+  & p {
+    margin: 20px 0;
+    text-align: justify;
+  }
+}
+
+footer {
+  position: relative;
+  background-color: #323232;
+  color: #fff;
+  padding: 30px;
+  z-index: 100;
+}
+
+
+
+
+.icons {
+  position: fixed;
+  width: 50px;
+  transition: opacity .25s;
+  opacity: 0;
+}
+
+@keyframes installAnimation {
+
+  /* estado normal */
+  0% {
+    transform: scale(1);
+  }
+
+  /* primeiro pulso */
+  10% {
+    transform: scale(1.15);
+  }
+
+  20% {
+    transform: scale(1);
+  }
+
+  /* segundo pulso */
+  30% {
+    transform: scale(1.15);
+  }
+
+  40% {
+    transform: scale(1);
+  }
+
+  /* pausa (até completar ~4s total) */
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+
+
+@media (orientation: landscape) {
+  main {
+    padding: 20px 60px;
+  }
+}
