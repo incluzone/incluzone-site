@@ -290,11 +290,18 @@ main {
   backdrop-filter: blur(18px) saturate(1.4);
 }
 
-.intro {
-  padding-bottom: 40px;
+/* zona azul: começa o main, com a frase de chamada + celular animado */
+.blue-zone {
+  background: linear-gradient(165deg, rgba(6, 69, 121, .42), rgba(21, 135, 214, .22));
+  backdrop-filter: blur(18px) saturate(1.4);
   border-radius: 32px 32px 0 0;
   border-top: 1px solid #fff;
   box-shadow: 0 -16px 50px -10px rgba(6, 69, 121, .4);
+  color: #fff;
+}
+
+.intro {
+  padding: 32px 22px 8px;
 }
 
 .sobre {
@@ -338,9 +345,6 @@ main h1 {
   position: relative;
   height: 320svh;
   /* quanto mais alto, mais "lento" o scroll da animação */
-  background: linear-gradient(165deg, rgba(6, 69, 121, .42), rgba(21, 135, 214, .22));
-  backdrop-filter: blur(18px) saturate(1.4);
-  color: #fff;
 }
 
 .showcase-stage {
@@ -667,7 +671,7 @@ body:has(dialog[open]) {
   }
 
   .intro {
-    padding-bottom: 56px;
+    padding: 56px 40px 16px;
   }
 
   .intro p {
@@ -744,5 +748,4 @@ body:has(dialog[open]) {
   #phone-canvas {
     max-height: none;
   }
-  }
-  
+}
