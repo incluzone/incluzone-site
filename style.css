@@ -3,6 +3,8 @@
   --blue-2: #1587d6;
   --teal: #19c3b1;
   --ink: #10263a;
+  --hl: #8fe0ff;
+  /* destaque sobre o fundo azul */
   --peek: 50px;
   /* quanto do conteúdo aparece embaixo do hero */
 }
@@ -82,6 +84,15 @@ body::before {
   to {
     transform: translate(12vmax, 8vmax) scale(1.15);
   }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* ---------- ÍCONES (aparecem, ficam um tempo e somem em outro lugar) ---------- */
@@ -251,18 +262,43 @@ footer a:focus-visible {
   }
 }
 
+/* ---------- FADE IN AO ROLAR (mesmo efeito da logo e dos botões) ---------- */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(30px) scale(.92);
+  transition: opacity .9s cubic-bezier(.2, .9, .2, 1), transform .9s cubic-bezier(.2, .9, .2, 1);
+}
+
+.js .reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
 /* ---------- CONTEÚDO: "sheet" que sobe sobre o hero, como num app ---------- */
 main {
   position: relative;
   z-index: 3;
   width: 100%;
+  text-align: left;
+}
+
+/* seções brancas (vidro fosco) */
+.sheet {
+  width: 100%;
   padding: 32px 22px 56px;
   background: rgba(255, 255, 255, .25);
   backdrop-filter: blur(18px) saturate(1.4);
+}
+
+.intro {
+  padding-bottom: 40px;
   border-radius: 32px 32px 0 0;
   border-top: 1px solid #fff;
   box-shadow: 0 -16px 50px -10px rgba(6, 69, 121, .4);
-  text-align: left;
+}
+
+.sobre {
+  padding-top: 48px;
 }
 
 main .content {
@@ -271,8 +307,7 @@ main .content {
 }
 
 /* chamada principal (a que aparece espiando embaixo do hero) */
-main .content>p:first-child {
-  margin-bottom: 40px;
+.intro p {
   font-size: 1rem;
   line-height: 1.5;
   font-weight: 700;
@@ -290,12 +325,90 @@ main h1 {
   border-left: 6px solid var(--teal);
 }
 
-main p {
+.sobre p {
   margin: 0 0 20px;
   font-size: 1.0625rem;
   /* 17px: confortável no celular */
   line-height: 1.7;
   hyphens: auto;
+}
+
+/* ---------- SEÇÃO AZUL: celular que gira com o scroll ---------- */
+.showcase {
+  position: relative;
+  height: 320svh;
+  /* quanto mais alto, mais "lento" o scroll da animação */
+  background: linear-gradient(165deg, rgba(6, 69, 121, .82), rgba(21, 135, 214, .62));
+  backdrop-filter: blur(18px) saturate(1.4);
+  color: #fff;
+}
+
+.showcase-stage {
+  position: sticky;
+  top: 0;
+  display: grid;
+  place-items: center;
+  height: 100svh;
+  padding: 24px 20px;
+}
+
+/* caixa com proporção fixa: texto (em %) e canvas escalam juntos */
+.showcase-box {
+  position: relative;
+  container-type: inline-size;
+  width: min(100%, 1100px, calc((100svh - 6rem) * 16 / 9));
+  aspect-ratio: 16 / 9;
+}
+
+#phone-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.phrases {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.showcase p.phrase {
+  --o: 0;
+  --t: 0px;
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  width: 36%;
+  margin: 0;
+  font-size: 3.4cqw;
+  line-height: 1.2;
+  font-weight: 700;
+  text-wrap: balance;
+  text-align: left;
+  text-shadow: 0 2px 18px rgba(3, 30, 55, .55);
+  opacity: var(--o);
+  transform: translateY(var(--t));
+  will-change: opacity, transform;
+}
+
+/* o celular fica à direita na 1ª frase e à esquerda na 2ª */
+#frase-1 {
+  left: 4%;
+}
+
+#frase-2 {
+  right: 4%;
+  text-align: right;
+}
+
+/* destaque: cor + peso + sublinhado (não depende só da cor) */
+.hl {
+  color: var(--hl);
+  text-decoration: underline;
+  text-decoration-thickness: .1em;
+  text-underline-offset: .16em;
+  text-decoration-color: rgba(143, 224, 255, .65);
 }
 
 .voltar-topo {
@@ -356,7 +469,6 @@ footer .contato {
   gap: 10px;
   padding: 10px 18px;
   border-radius: 100px;
-  background: rgba(255, 255, 255, .12);
   background: rgba(255, 255, 255, .12);
   color: #fff;
   text-decoration: none;
@@ -493,6 +605,51 @@ body:has(dialog[open]) {
   }
 }
 
+/* ---------- CELULAR: texto em cima, canvas embaixo (coluna) ---------- */
+@media (max-width: 699px) {
+  .showcase-stage {
+    padding: 16px 20px;
+  }
+
+  .showcase-box {
+    display: flex;
+    flex-direction: column;
+    container-type: normal;
+    width: min(100%, 460px);
+    aspect-ratio: auto;
+  }
+
+  .phrases {
+    position: relative;
+    inset: auto;
+    flex: none;
+    height: 7.2rem;
+  }
+
+  .showcase p.phrase {
+    inset: 0;
+    width: 100%;
+    height: fit-content;
+    margin: auto 0;
+    translate: none;
+    font-size: 1.6rem;
+    text-align: center;
+  }
+
+  #frase-1,
+  #frase-2 {
+    left: 0;
+    right: 0;
+    text-align: center;
+  }
+
+  #phone-canvas {
+    height: auto;
+    aspect-ratio: 4 / 5;
+    max-height: calc(100svh - 12rem);
+  }
+}
+
 /* ---------- TELAS MAIORES ---------- */
 @media (min-width: 700px) {
 
@@ -505,15 +662,19 @@ body:has(dialog[open]) {
     --peek: 85px;
   }
 
-  main {
+  .sheet {
     padding: 56px 40px 80px;
   }
 
-  main .content>p:first-child {
+  .intro {
+    padding-bottom: 56px;
+  }
+
+  .intro p {
     font-size: 1.4rem;
   }
 
-  main p {
+  .sobre p {
     text-align: justify;
   }
 
@@ -545,4 +706,43 @@ body:has(dialog[open]) {
     animation: none !important;
     transition: none !important;
   }
+
+  /* sem scroll animado: mostra o celular parado e as duas frases juntas */
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .showcase {
+    height: auto;
+  }
+
+  .showcase-stage {
+    position: static;
+    height: auto;
+    padding: 56px 20px;
+  }
+
+  .showcase p.phrase {
+    opacity: 1;
+    transform: none;
+  }
 }
+
+@media (prefers-reduced-motion: reduce) and (max-width: 699px) {
+  .phrases {
+    display: grid;
+    gap: 16px;
+    height: auto;
+    margin-bottom: 20px;
+  }
+
+  .showcase p.phrase {
+    position: static;
+  }
+
+  #phone-canvas {
+    max-height: none;
+  }
+  }
+  
