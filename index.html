@@ -3,36 +3,75 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#064579">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="assets/images/favicon.ico" type="image/x-icon">
     <title>IncluZone</title>
 </head>
 
 <body>
-    <div id="div-logo-instalar">
-        <img src="assets/images/logo-titulo.webp" alt="" id="logo">
-        <a href="https://github.com/incluzone/incluzone-site/releases/download/v1.0/app-release.apk" id="install">Instalar app</a>
-    </div>
+    <div class="bg-glow" aria-hidden="true"></div>
+    <div id="icons-layer" aria-hidden="true"></div>
 
-    <main>
-        <h1>Sobre o IncluZone</h1>
-        <p>O Incluzone é um app que tem como objetivo...</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat, facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure nemo esse voluptas veritatis?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat, facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure nemo esse voluptas veritatis?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat, facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure nemo esse voluptas veritatis?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat, facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure nemo esse voluptas veritatis?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat, facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure nemo esse voluptas veritatis?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat, facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure nemo esse voluptas veritatis?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat, facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure nemo esse voluptas veritatis?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat, facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure nemo esse voluptas veritatis?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat, facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure nemo esse voluptas veritatis?</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat, facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure nemo esse voluptas veritatis?</p>
+    <section id="div-logo-instalar">
+        <img src="assets/images/logo-titulo.webp" alt="IncluZone" id="logo">
+        <a href="https://github.com/incluzone/incluzone-site/releases/download/v1.0/app-release.apk"
+            id="install">Instalar app</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSftVEBANMn_6pWnIlIm8Iv4GlEFfC7IJq6-WEtoR_Gz9XG2Qg/viewform"
+            target="_blank" rel="noopener" id="forms">
+            <img src="assets/images/forms-logo.webp" alt="">
+            Acessar Forms
+        </a>
+    </section>
+
+    <main id="sobre">
+        <div class="content">
+            <p>Baixe o aplicativo, experimente todas as funcionalidades e compartilhe sua opinião no formulário!</p>
+            <h1>Sobre o IncluZone</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate
+                reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis
+                velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat,
+                facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure
+                nemo esse voluptas veritatis?</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate
+                reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis
+                velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat,
+                facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure
+                nemo esse voluptas veritatis?</p>
+            <a href="#" class="voltar-topo">
+                <span aria-hidden="true">↑</span> Voltar ao topo
+            </a>
+        </div>
     </main>
+
     <footer>
-        <p>@incluzone</p>
+        <a href="https://www.instagram.com/incluzone.tcc/" target="_blank" rel="noopener" class="contato">
+            <img src="assets/images/instagram-logo.webp" alt="">
+            <span>@incluzone.tcc</span>
+        </a>
+        <a href="mailto:incluzoneapp+suporte@gmail.com" id="email-link" class="contato">
+            <img src="assets/images/gmail-logo.webp" alt="">
+            <span>incluzoneapp+suporte@gmail.com</span>
+        </a>
+        <p>© 2026 IncluZone. Todos os direitos reservados.</p>
     </footer>
-    
+
+    <dialog id="dialog-instalar" aria-labelledby="dialog-titulo" aria-describedby="dialog-texto">
+        <div class="dialog-box">
+            <div class="dialog-icone" aria-hidden="true">!</div>
+            <h2 id="dialog-titulo"></h2>
+            <p id="dialog-texto"></p>
+            <form method="dialog">
+                <button type="submit">Entendi</button>
+            </form>
+        </div>
+    </dialog>
+
     <script src="script.js"></script>
 </body>
 
