@@ -29,24 +29,50 @@
         </a>
     </section>
 
-    <main id="sobre">
-        <div class="content">
-            <p>Baixe o aplicativo, experimente todas as funcionalidades e compartilhe sua opinião no formulário!</p>
-            <h1>Sobre o IncluZone</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate
-                reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis
-                velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat,
-                facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure
-                nemo esse voluptas veritatis?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo, rem, cupiditate
-                reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta aperiam ipsa nobis
-                velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur quia omnis quaerat,
-                facilis tempore excepturi sed delectus voluptate, impedit nesciunt nam corporis sequi tenetur? Aut iure
-                nemo esse voluptas veritatis?</p>
-            <a href="#" class="voltar-topo">
-                <span aria-hidden="true">↑</span> Voltar ao topo
-            </a>
-        </div>
+    <main>
+        <!-- 1) BRANCO: chamada para baixar -->
+        <section class="sheet intro">
+            <div class="content">
+                <p class="reveal">Baixe o aplicativo, experimente todas as funcionalidades e compartilhe sua opinião no
+                    formulário!</p>
+            </div>
+        </section>
+
+        <!-- 2) AZUL: celular animado pelo scroll -->
+        <section class="showcase" id="showcase" aria-labelledby="showcase-titulo">
+            <h2 id="showcase-titulo" class="sr-only">O IncluZone em ação</h2>
+            <div class="showcase-stage">
+                <div class="showcase-box reveal">
+                    <div class="phrases">
+                        <p class="phrase" id="frase-1">Acessibilidade começa com <span class="hl">informação</span>.</p>
+                        <p class="phrase" id="frase-2">Registre vagas e construa uma cidade <span class="hl">mais
+                                inclusiva</span>.</p>
+                    </div>
+                    <canvas id="phone-canvas" role="img"
+                        aria-label="Celular com o aplicativo IncluZone girando e mostrando suas telas"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3) BRANCO: texto completo -->
+        <section class="sheet sobre" id="sobre">
+            <div class="content">
+                <h1 class="reveal">Sobre o IncluZone</h1>
+                <p class="reveal">Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo,
+                    rem, cupiditate reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta
+                    aperiam ipsa nobis velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                    Aspernatur quia omnis quaerat, facilis tempore excepturi sed delectus voluptate, impedit nesciunt
+                    nam corporis sequi tenetur? Aut iure nemo esse voluptas veritatis?</p>
+                <p class="reveal">Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia, totam. Explicabo,
+                    rem, cupiditate reiciendis totam dolore qui quidem sequi odio, expedita rerum quasi dolorum soluta
+                    aperiam ipsa nobis velit ducimus? Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                    Aspernatur quia omnis quaerat, facilis tempore excepturi sed delectus voluptate, impedit nesciunt
+                    nam corporis sequi tenetur? Aut iure nemo esse voluptas veritatis?</p>
+                <a href="#" class="voltar-topo reveal">
+                    <span aria-hidden="true">↑</span> Voltar ao topo
+                </a>
+            </div>
+        </section>
     </main>
 
     <footer>
