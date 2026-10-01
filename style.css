@@ -338,7 +338,7 @@ main h1 {
   position: relative;
   height: 320svh;
   /* quanto mais alto, mais "lento" o scroll da animação */
-  background: linear-gradient(165deg, rgba(6, 69, 121, .82), rgba(21, 135, 214, .62));
+  background: linear-gradient(165deg, rgba(6, 69, 121, .42), rgba(21, 135, 214, .22));
   backdrop-filter: blur(18px) saturate(1.4);
   color: #fff;
 }
