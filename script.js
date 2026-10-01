@@ -1,4 +1,3 @@
-const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches
 document.documentElement.classList.add("js")
 
 /* ---------- ÍCONES: aparecem, ficam um tempo e somem para reaparecer em outro lugar ---------- */
@@ -29,8 +28,6 @@ function showIcon(icon) {
 
     // dois frames para a transição de entrada ser aplicada
     requestAnimationFrame(() => requestAnimationFrame(() => icon.classList.add("on")))
-
-    if (reduceMotion) return              // sem animação: fica parado
 
     setTimeout(() => {
         icon.classList.remove("on")
@@ -70,22 +67,28 @@ if ("IntersectionObserver" in window) {
 
 /* ---------- CELULAR NO CANVAS: o scroll escolhe o frame ---------- */
 /*
-  TESTE: 10 fotos aleatórias da internet (sem relação entre si, sem transparência).
-  PRODUÇÃO: troque FRAME_COUNT e frameUrl pelos seus WebP com alpha, por exemplo:
-    const FRAME_COUNT = 72
-    const frameUrl = i => `assets/frames/frame-${String(i + 1).padStart(3, "0")}.webp`
+  Dois conjuntos de frames: computador (horizontal) e celular (vertical).
+  TESTE: fotos aleatórias. PRODUÇÃO: troque count e url pelos seus WebP, por exemplo:
+    desktop: { count: 72, url: i => `assets/frames/desktop/frame-${String(i + 1).padStart(3, "0")}.webp` }
+    mobile:  { count: 72, url: i => `assets/frames/mobile/frame-${String(i + 1).padStart(3, "0")}.webp` }
 */
-const FRAME_COUNT = 10
-const frameUrl = i => `https://picsum.photos/id/${10 + i}/960/540`
+const SETS = {
+    desktop: { count: 10, url: i => `https://picsum.photos/id/${10 + i}/960/540` },
+    mobile: { count: 84, url: i => `assets/video-portrait/frame-${String(i + 1).padStart(3, "0")}.webp` }
+}
+
+const mqMobile = matchMedia("(max-width: 699px)")   // mesmo ponto de corte do CSS
 
 const showcase = document.getElementById("showcase")
 const canvas = document.getElementById("phone-canvas")
 const ctx = canvas.getContext("2d")
 const phrases = [document.getElementById("frase-1"), document.getElementById("frase-2")]
 
-const frames = new Array(FRAME_COUNT).fill(null)
+let FRAME_COUNT = 0
+let frames = []
 let wantFrame = 0
 let ticking = false
+let loadToken = 0
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v))
 
@@ -107,7 +110,7 @@ function sizeCanvas() {
     }
 }
 
-// desenha o frame pedido (ou o mais próximo já carregado), recortando no centro ("cover")
+// desenha o frame pedido (ou o mais próximo já carregado), inteiro e centralizado ("contain")
 function draw(idx) {
     let img = null
     for (let d = 0; d < FRAME_COUNT && !img; d++) {
@@ -120,16 +123,12 @@ function draw(idx) {
     const ch = canvas.height
     if (!cw || !ch) return
 
-    const iw = img.naturalWidth
-    const ih = img.naturalHeight
-    const scale = Math.max(cw / iw, ch / ih)
-    const sw = cw / scale
-    const sh = ch / scale
-    const sx = (iw - sw) / 2
-    const sy = (ih - sh) / 2
+    const scale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight)
+    const dw = img.naturalWidth * scale
+    const dh = img.naturalHeight * scale
 
     ctx.clearRect(0, 0, cw, ch)    // necessário para manter a transparência
-    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch)
+    ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh)
 }
 
 function update() {
@@ -156,30 +155,31 @@ function requestUpdate() {
     requestAnimationFrame(update)
 }
 
-// pré-carrega os frames (aos poucos) e desenha assim que cada um chega
-for (let i = 0; i < FRAME_COUNT; i++) {
-    const img = new Image()
-    img.decoding = "async"
-    img.onload = () => {
-        frames[i] = img
-        if (reduceMotion) draw(Math.floor(FRAME_COUNT / 2))   // parado, com a tela visível
-        else draw(wantFrame)
-    }
-    img.src = frameUrl(i)
-}
+// carrega o conjunto certo para o tamanho de tela (e recarrega se a tela cruzar o ponto de corte)
+function loadFrames() {
+    const set = mqMobile.matches ? SETS.mobile : SETS.desktop
+    const token = ++loadToken            // ignora respostas de um conjunto antigo
+    FRAME_COUNT = set.count
+    frames = new Array(FRAME_COUNT).fill(null)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-if (reduceMotion) {
-    // sem animação: frames estáticos e as duas frases visíveis
-    phrases.forEach(p => {
-        p.style.setProperty("--o", "1")
-        p.style.setProperty("--t", "0px")
-    })
-    window.addEventListener("resize", () => draw(Math.floor(FRAME_COUNT / 2)))
-} else {
-    window.addEventListener("scroll", requestUpdate, { passive: true })
-    window.addEventListener("resize", requestUpdate)
+    for (let i = 0; i < FRAME_COUNT; i++) {
+        const img = new Image()
+        img.decoding = "async"
+        img.onload = () => {
+            if (token !== loadToken) return
+            frames[i] = img
+            draw(wantFrame)
+        }
+        img.src = set.url(i)
+    }
     requestUpdate()
 }
+
+window.addEventListener("scroll", requestUpdate, { passive: true })
+window.addEventListener("resize", requestUpdate)
+mqMobile.addEventListener("change", loadFrames)
+loadFrames()
 
 /* ---------- AVISO AO CLICAR EM "INSTALAR APP" (APK só instala no Android) ---------- */
 const installBtn = document.getElementById("install")
@@ -231,5 +231,5 @@ if (!isMobile) {
     emailLink.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(emailSuporte)}`
     emailLink.target = "_blank"
     emailLink.rel = "noopener"
-            }
-    
+}
+
