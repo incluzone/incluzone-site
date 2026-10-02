@@ -35,7 +35,7 @@ html.custom-scroll::-webkit-scrollbar {
   position: absolute;
   top: 0;
   right: 0;
-  width: 14px;
+  width: 18px;
   pointer-events: auto;
   cursor: grab;
   touch-action: none;   /* o arraste não vira rolagem da página */
@@ -47,7 +47,7 @@ html.custom-scroll::-webkit-scrollbar {
   position: absolute;
   top: 0;
   bottom: 0;
-  right: 3px;
+  right: 5px;
   width: 8px;
   border-radius: 999px;
   background: linear-gradient(180deg, var(--blue-2), var(--blue));
@@ -70,7 +70,7 @@ html.custom-scroll::-webkit-scrollbar {
 /* hover só onde existe mouse (no toque ele "gruda" depois de um tap) */
 @media (hover: hover) and (pointer: fine) {
   #scrollbar-thumb:hover::before {
-    width: 12px;
+    width: 16px;
     right: 1px;
     opacity: 1;
     background: linear-gradient(180deg, var(--teal), var(--blue-2));
@@ -124,6 +124,11 @@ h6::selection,
 p::selection {
   background-color: var(--ink); /* Cor de fundo da seleção (ex: Pink) */
   color: var(--hl);           /* Cor do texto selecionado */
+}
+
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
 }
 
 * {

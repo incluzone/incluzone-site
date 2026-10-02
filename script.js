@@ -271,7 +271,7 @@ if (isAndroid) {
     root.classList.add("custom-scroll")
 
     const MIN_THUMB = 40
-    const HIDE_DELAY = 1200      // ms parado até sumir (só tem efeito no toque)
+    const HIDE_DELAY = 500      // ms parado até sumir (só tem efeito no toque)
     let thumbH = 0
     let dragging = false
     let startY = 0
