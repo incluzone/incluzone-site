@@ -100,7 +100,7 @@ html.custom-scroll::-webkit-scrollbar {
   /* visual continua fino, só um pouco mais afastado da borda */
   #scrollbar-thumb::before {
     width: 5px;
-    right: 4px;
+    right: 2px;
     opacity: .85;
   }
 
