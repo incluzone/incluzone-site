@@ -24,7 +24,7 @@ html.custom-scroll::-webkit-scrollbar {
   top: env(safe-area-inset-top, 0px);
   right: env(safe-area-inset-right, 0px);
   bottom: env(safe-area-inset-bottom, 0px);
-  width: 14px;
+  width: 18px;
   z-index: 50;
   pointer-events: none;
   transition: opacity .3s;
@@ -47,7 +47,7 @@ html.custom-scroll::-webkit-scrollbar {
   position: absolute;
   top: 0;
   bottom: 0;
-  right: 5px;
+  right: 7px;
   width: 8px;
   border-radius: 999px;
   background: linear-gradient(180deg, var(--blue-2), var(--blue));
@@ -61,8 +61,8 @@ html.custom-scroll::-webkit-scrollbar {
 }
 
 #scrollbar-thumb.dragging::before {
-  width: 12px;
-  right: 1px;
+  width: 16px;
+  right: 3px;
   opacity: 1;
   background: linear-gradient(180deg, var(--teal), var(--blue-2));
 }
@@ -71,7 +71,7 @@ html.custom-scroll::-webkit-scrollbar {
 @media (hover: hover) and (pointer: fine) {
   #scrollbar-thumb:hover::before {
     width: 16px;
-    right: 1px;
+    right: 3px;
     opacity: 1;
     background: linear-gradient(180deg, var(--teal), var(--blue-2));
   }
@@ -92,19 +92,21 @@ html.custom-scroll::-webkit-scrollbar {
     pointer-events: none;
   }
 
+  /* área de toque: 44px é o tamanho mínimo recomendado para alvos de toque */
   #scrollbar-thumb {
-    width: 28px;
+    width: 44px;
   }
 
+  /* visual continua fino, só um pouco mais afastado da borda */
   #scrollbar-thumb::before {
     width: 5px;
-    right: 4px;
+    right: 8px;
     opacity: .85;
   }
 
   #scrollbar-thumb.dragging::before {
     width: 8px;
-    right: 3px;
+    right: 6px;
   }
 }
 
@@ -442,6 +444,7 @@ main {
   border-radius: 32px 32px 0 0;
   box-shadow: 0 -16px 50px -10px rgba(6, 69, 121, .4);
   color: #fff;
+  border-top: 1px solid #fff;
 }
 
 /* frase de chamada: sem fundo, sobre a imagem do site */
