@@ -9,6 +9,80 @@
   /* quanto do conteúdo aparece embaixo do hero */
 }
 
+/* esconde a scrollbar nativa só quando a custom está ativa */
+html.custom-scroll {
+  scrollbar-width: none;
+}
+
+html.custom-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* scrollbar custom: flutua por cima do conteúdo */
+#scrollbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 14px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* o thumb em si é uma área de hover fixa e invisível (14px, nunca muda) */
+#scrollbar-thumb {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 18px;
+  pointer-events: auto;
+  cursor: grab;
+}
+
+/* a parte visível: é ela que cresce no hover */
+#scrollbar-thumb::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 5px;
+  width: 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--blue-2), var(--blue));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .6);
+  opacity: .55;
+  transition: opacity .2s, width .2s, right .2s;
+}
+
+#scrollbar-thumb:hover::before,
+#scrollbar-thumb.dragging::before {
+  width: 16px;
+  right: 1px;
+  opacity: 1;
+  background: linear-gradient(180deg, var(--teal), var(--blue-2));
+}
+
+#scrollbar-thumb.dragging {
+  cursor: grabbing;
+}
+
+/* 1. Remove/Anula o efeito padrão em todo o site (opcional, se quiser garantir que o resto fique padrão) */
+::selection {
+  background: transparent; /* ou mantenha o padrão do navegador se preferir */
+  color: inherit;
+}
+
+/* 2. Aplica a cor personalizada apenas nos elementos desejados */
+h1::selection,
+h2::selection,
+h3::selection,
+p::selection,
+span::selection,
+a::selection {
+  background-color: var(--ink); /* Cor de fundo da seleção (ex: Pink) */
+  color: var(--hl);           /* Cor do texto selecionado */
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -199,6 +273,7 @@ body::before {
 
 #forms img {
   width: 24px;
+  animation: formsShake 4s 1.2s infinite;
 }
 
 #install:focus-visible,
@@ -218,7 +293,7 @@ footer a:focus-visible {
 
 @keyframes bob {
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-25px);
   }
 }
 
@@ -259,6 +334,28 @@ footer a:focus-visible {
   /* pausa (até completar ~4s total) */
   100% {
     transform: scale(1);
+  }
+}
+
+@keyframes formsShake {
+  0%, 40% {
+    transform: none;
+  }
+  /* o pulso do botão de cima termina em 40%, aí começa a chacoalhada */
+  44% {
+    transform: rotate(-14deg) scale(1.3);
+  }
+  48% {
+    transform: rotate(12deg) scale(1.3);
+  }
+  52% {
+    transform: rotate(-8deg) scale(1.2);
+  }
+  56% {
+    transform: rotate(5deg) scale(1.1);
+  }
+  60%, 100% {
+    transform: none;
   }
 }
 
@@ -321,10 +418,11 @@ main .content {
   color: var(--blue);
   text-align: center;
   text-wrap: balance;
-  padding: 32px;
+  padding: 10px;
   background: rgba(255, 255, 255, .25);
   backdrop-filter: blur(18px) saturate(1.4);
   border-radius: 32px;
+  border: 1px solid #fff;
 }
 
 main h1,

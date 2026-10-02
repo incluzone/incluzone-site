@@ -68,7 +68,7 @@ if ("IntersectionObserver" in window) {
 /* ---------- CELULAR NO CANVAS: o scroll escolhe o frame ---------- */
 
 const SETS = {
-    desktop: { count: 10, url: i => `assets/video-landscape/frame-${String(i + 1).padStart(3, "0")}.webp` },
+    desktop: { count: 480, url: i => `assets/video-landscape/frame-${String(i + 1).padStart(3, "0")}.webp` },
     mobile: { count: 420, url: i => `assets/video-portrait/frame-${String(i + 1).padStart(3, "0")}.webp` }
 }
 
@@ -257,3 +257,63 @@ if (isAndroid) {
     })
 }
 // computador: mantém o href padrão (web, em nova aba)
+
+/* ---------- SCROLLBAR CUSTOM (só com mouse; no celular já é flutuante) ---------- */
+if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    const root = document.documentElement
+    const bar = document.createElement("div")
+    const thumb = document.createElement("div")
+    bar.id = "scrollbar"
+    thumb.id = "scrollbar-thumb"
+    bar.setAttribute("aria-hidden", "true")
+    bar.appendChild(thumb)
+    document.body.appendChild(bar)
+    root.classList.add("custom-scroll")
+
+    const MIN_THUMB = 40
+    let thumbH = 0
+    let dragging = false
+    let startY = 0
+    let startScroll = 0
+
+    function updateBar() {
+        const view = root.clientHeight
+        const total = root.scrollHeight
+        if (total <= view) { bar.style.display = "none"; return }
+        bar.style.display = ""
+
+        thumbH = Math.max(MIN_THUMB, (view * view) / total)
+        const top = (root.scrollTop / (total - view)) * (view - thumbH)
+        thumb.style.height = `${thumbH}px`
+        thumb.style.transform = `translateY(${top}px)`
+    }
+
+    thumb.addEventListener("pointerdown", e => {
+        dragging = true
+        startY = e.clientY
+        startScroll = root.scrollTop
+        thumb.setPointerCapture(e.pointerId)
+        thumb.classList.add("dragging")
+        root.style.scrollBehavior = "auto"     // sem "smooth" durante o arraste
+    })
+
+    thumb.addEventListener("pointermove", e => {
+        if (!dragging) return
+        const view = root.clientHeight
+        const ratio = (root.scrollHeight - view) / (view - thumbH)
+        root.scrollTop = startScroll + (e.clientY - startY) * ratio
+    })
+
+    const stopDrag = () => {
+        dragging = false
+        thumb.classList.remove("dragging")
+        root.style.scrollBehavior = ""
+    }
+    thumb.addEventListener("pointerup", stopDrag)
+    thumb.addEventListener("pointercancel", stopDrag)
+
+    window.addEventListener("scroll", updateBar, { passive: true })
+    window.addEventListener("resize", updateBar)
+    new ResizeObserver(updateBar).observe(document.body)   // conteúdo que muda de altura
+    updateBar()
+}
