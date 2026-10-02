@@ -620,21 +620,45 @@ body:has(dialog[open]) {
   }
 }
 
-/* ---------- CELULAR: frase sobre o topo da imagem ---------- */
+/* ---------- CELULAR: texto acima, imagens abaixo, conjunto centralizado ---------- */
 @media (max-width: 699px) {
+  .showcase-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2svh;
+    padding: 5svh 16px 4svh;
+  }
+
+  /* as duas frases ocupam o mesmo lugar (uma some enquanto a outra aparece) */
+  .phrases {
+    position: static;
+    display: grid;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
   .showcase p.phrase {
-    top: 7%;
+    grid-area: 1 / 1;
+    position: static;
     translate: none;
-    font-size: 1.6rem;
+    width: auto;
+    padding: 0 8px;
+    font-size: clamp(1.25rem, 5.8vw, 1.6rem);
+    text-align: center;
   }
 
   #frase-1,
   #frase-2 {
-    left: 0;
-    right: 0;
-    width: auto;
-    padding: 0 20px;
     text-align: center;
+  }
+
+  /* o canvas usa todo o espaço que sobra embaixo do texto */
+  #phone-canvas {
+    flex: 1 1 0;
+    min-height: 0;
+    width: 100%;
+    height: auto;
   }
 }
 

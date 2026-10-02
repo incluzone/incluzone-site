@@ -66,14 +66,9 @@ if ("IntersectionObserver" in window) {
 }
 
 /* ---------- CELULAR NO CANVAS: o scroll escolhe o frame ---------- */
-/*
-  Dois conjuntos de frames: computador (horizontal) e celular (vertical).
-  TESTE: fotos aleatórias. PRODUÇÃO: troque count e url pelos seus WebP, por exemplo:
-    desktop: { count: 72, url: i => `assets/frames/desktop/frame-${String(i + 1).padStart(3, "0")}.webp` }
-    mobile:  { count: 72, url: i => `assets/frames/mobile/frame-${String(i + 1).padStart(3, "0")}.webp` }
-*/
+
 const SETS = {
-    desktop: { count: 10, url: i => `https://picsum.photos/id/${10 + i}/960/540` },
+    desktop: { count: 10, url: i => `assets/video-landscape/frame-${String(i + 1).padStart(3, "0")}.webp` },
     mobile: { count: 420, url: i => `assets/video-portrait/frame-${String(i + 1).padStart(3, "0")}.webp` }
 }
 
