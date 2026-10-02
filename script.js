@@ -72,9 +72,15 @@ if ("IntersectionObserver" in window) {
     desktop: { count: 72, url: i => `assets/frames/desktop/frame-${String(i + 1).padStart(3, "0")}.webp` }
     mobile:  { count: 72, url: i => `assets/frames/mobile/frame-${String(i + 1).padStart(3, "0")}.webp` }
 */
+
+const frameSet = (folder, total, step) => ({
+    count: Math.floor((total - 1) / step) + 1,
+    url: i => `${folder}/frame-${String(i * step + 1).padStart(3, "0")}.webp`
+})
+
 const SETS = {
-    desktop: { count: 10, url: i => `https://picsum.photos/id/${10 + i}/960/540` },
-    mobile: { count: 420, url: i => `assets/video-portrait/frame-${String(i + 1).padStart(3, "0")}.webp` }
+    desktop: frameSet("assets/video-landscape", 420, 5),   // ajuste a pasta e o TOTAL
+    mobile: frameSet("assets/video-portrait", 420, 5)
 }
 
 const mqMobile = matchMedia("(max-width: 699px)")   // mesmo ponto de corte do CSS
