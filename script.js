@@ -228,3 +228,32 @@ if (!isMobile) {
     emailLink.rel = "noopener"
 }
 
+/* ---------- INSTAGRAM: app no celular, web no computador (ou sem o app) ---------- */
+const instagramLink = document.getElementById("instagram-link")
+const instaUser = "incluzone.tcc"
+const instaWeb = `https://www.instagram.com/${instaUser}/`
+
+if (isAndroid) {
+    // intent:// abre o app; se não estiver instalado, o Android vai para o browser_fallback_url
+    instagramLink.href =
+        `intent://instagram.com/_u/${instaUser}#Intent;package=com.instagram.android;scheme=https;` +
+        `S.browser_fallback_url=${encodeURIComponent(instaWeb)};end`
+    instagramLink.removeAttribute("target")
+    instagramLink.removeAttribute("rel")
+} else if (isIOS) {
+    // o iOS não tem fallback nativo: tenta abrir o app e, se a página continuar visível, vai para a web
+    instagramLink.addEventListener("click", e => {
+        e.preventDefault()
+        let leftPage = false
+        const onVisibility = () => { if (document.hidden) leftPage = true }
+        document.addEventListener("visibilitychange", onVisibility)
+
+        window.location.href = `instagram://user?username=${instaUser}`
+
+        setTimeout(() => {
+            document.removeEventListener("visibilitychange", onVisibility)
+            if (!leftPage) window.location.href = instaWeb
+        }, 1500)
+    })
+}
+// computador: mantém o href padrão (web, em nova aba)
