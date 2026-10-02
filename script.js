@@ -74,7 +74,7 @@ if ("IntersectionObserver" in window) {
 */
 const SETS = {
     desktop: { count: 10, url: i => `https://picsum.photos/id/${10 + i}/960/540` },
-    mobile: { count: 84, url: i => `assets/video-portrait/frame-${String(i + 1).padStart(3, "0")}.webp` }
+    mobile: { count: 420, url: i => `assets/video-portrait/frame-${String(i + 1).padStart(3, "0")}.webp` }
 }
 
 const mqMobile = matchMedia("(max-width: 699px)")   // mesmo ponto de corte do CSS

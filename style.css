@@ -400,7 +400,7 @@ main h2 {
   line-height: 1.2;
   font-weight: 700;
   text-wrap: balance;
-  text-align: left;
+  text-align: center;
   text-shadow: 0 2px 18px rgba(3, 30, 55, .55);
   opacity: var(--o);
   transform: translateY(var(--t));
