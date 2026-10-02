@@ -79,8 +79,8 @@ const frameSet = (folder, total, step) => ({
 })
 
 const SETS = {
-    desktop: frameSet("assets/video-landscape", 420, 5),   // ajuste a pasta e o TOTAL
-    mobile: frameSet("assets/video-portrait", 420, 5)
+    desktop: frameSet("assets/video-landscape", 420, 10),   // ajuste a pasta e o TOTAL
+    mobile: frameSet("assets/video-portrait", 420, 10)
 }
 
 const mqMobile = matchMedia("(max-width: 699px)")   // mesmo ponto de corte do CSS
