@@ -158,16 +158,37 @@ function loadFrames() {
     frames = new Array(FRAME_COUNT).fill(null)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    for (let i = 0; i < FRAME_COUNT; i++) {
+    // ordem de prioridade: 1 a cada 24, depois 1 a cada 8, 1 a cada 2 e por fim todos
+    const order = []
+    const seen = new Set()
+    for (const step of [24, 8, 2, 1]) {
+        for (let i = 0; i < FRAME_COUNT; i += step) {
+            if (!seen.has(i)) { seen.add(i); order.push(i) }
+        }
+    }
+    order.push(FRAME_COUNT - 1)          // garante o último frame cedo
+    
+    let next = 0
+    const MAX_PARALLEL = 6
+
+    function loadNext() {
+        if (token !== loadToken || next >= order.length) return
+        const i = order[next++]
+        if (frames[i]) return loadNext()
+
         const img = new Image()
         img.decoding = "async"
         img.onload = () => {
             if (token !== loadToken) return
             frames[i] = img
             draw(wantFrame)
+            loadNext()
         }
+        img.onerror = () => loadNext()   // um frame com erro não trava a fila
         img.src = set.url(i)
     }
+
+    for (let k = 0; k < MAX_PARALLEL; k++) loadNext()
     requestUpdate()
 }
 
@@ -330,4 +351,36 @@ if (isAndroid) {
     window.addEventListener("resize", updateBar)
     new ResizeObserver(updateBar).observe(document.body)   // conteúdo que muda de altura
     updateBar()
+}
+
+/* ---------- VOLTAR AO TOPO: rolagem suave com garantia de chegar ao topo ---------- */
+{
+    const btn = document.querySelector(".voltar-topo")
+    let checker = 0
+    let fallback = 0
+
+    btn.addEventListener("click", () => {
+        clearInterval(checker)
+        clearTimeout(fallback)
+
+        window.scrollTo({ top: 0, behavior: "smooth" })
+
+        let last = -1
+        checker = setInterval(() => {
+            const y = window.scrollY
+            if (y === 0) { clearInterval(checker); clearTimeout(fallback); return }
+            if (y === last) {                       // parou antes de chegar ao topo
+                clearInterval(checker)
+                clearTimeout(fallback)
+                window.scrollTo({ top: 0, behavior: "instant" })
+            }
+            last = y
+        }, 250)
+
+        // segurança: se por algum motivo ainda não chegou, força o topo
+        fallback = setTimeout(() => {
+            clearInterval(checker)
+            if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: "instant" })
+        }, 4000)
+    })
 }

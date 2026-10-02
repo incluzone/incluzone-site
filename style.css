@@ -541,7 +541,7 @@ main h2 {
   --o: 0;
   --t: 0px;
   position: absolute;
-  top: 50%;
+  top: 45%;
   translate: 0 -50%;
   width: 36%;
   margin: 0;
@@ -558,11 +558,11 @@ main h2 {
 
 /* o celular fica à direita na 1ª frase e à esquerda na 2ª */
 #frase-1 {
-  left: 4%;
+  left: 15%;
 }
 
 #frase-2 {
-  right: 4%;
+  right: 15%;
   text-align: right;
 }
 
@@ -592,6 +592,8 @@ main h2 {
   text-decoration: none;
   transition: background .25s;
   -webkit-tap-highlight-color: transparent;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .voltar-topo:hover {
@@ -841,6 +843,10 @@ body:has(dialog[open]) {
 
   #logo {
     width: 340px;
+  }
+
+  .showcase {
+    height: 700svh;  
   }
 }
 
