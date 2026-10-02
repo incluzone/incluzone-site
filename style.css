@@ -21,31 +21,33 @@ html.custom-scroll::-webkit-scrollbar {
 /* scrollbar custom: flutua por cima do conteúdo */
 #scrollbar {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  top: env(safe-area-inset-top, 0px);
+  right: env(safe-area-inset-right, 0px);
+  bottom: env(safe-area-inset-bottom, 0px);
   width: 14px;
   z-index: 50;
   pointer-events: none;
+  transition: opacity .3s;
 }
 
-/* o thumb em si é uma área de hover fixa e invisível (14px, nunca muda) */
+/* área de hover/toque fixa e invisível */
 #scrollbar-thumb {
   position: absolute;
   top: 0;
   right: 0;
-  width: 18px;
+  width: 14px;
   pointer-events: auto;
   cursor: grab;
+  touch-action: none;   /* o arraste não vira rolagem da página */
 }
 
-/* a parte visível: é ela que cresce no hover */
+/* parte visível: é ela que muda de tamanho */
 #scrollbar-thumb::before {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
-  right: 5px;
+  right: 3px;
   width: 8px;
   border-radius: 999px;
   background: linear-gradient(180deg, var(--blue-2), var(--blue));
@@ -54,16 +56,56 @@ html.custom-scroll::-webkit-scrollbar {
   transition: opacity .2s, width .2s, right .2s;
 }
 
-#scrollbar-thumb:hover::before,
+#scrollbar-thumb.dragging {
+  cursor: grabbing;
+}
+
 #scrollbar-thumb.dragging::before {
-  width: 16px;
+  width: 12px;
   right: 1px;
   opacity: 1;
   background: linear-gradient(180deg, var(--teal), var(--blue-2));
 }
 
-#scrollbar-thumb.dragging {
-  cursor: grabbing;
+/* hover só onde existe mouse (no toque ele "gruda" depois de um tap) */
+@media (hover: hover) and (pointer: fine) {
+  #scrollbar-thumb:hover::before {
+    width: 12px;
+    right: 1px;
+    opacity: 1;
+    background: linear-gradient(180deg, var(--teal), var(--blue-2));
+  }
+}
+
+/* celular/tablet: aparece ao rolar e some depois */
+@media (hover: none), (pointer: coarse) {
+  #scrollbar {
+    opacity: 0;
+  }
+
+  #scrollbar.active {
+    opacity: 1;
+  }
+
+  /* escondida, não pode capturar toques da borda da tela */
+  #scrollbar:not(.active) #scrollbar-thumb {
+    pointer-events: none;
+  }
+
+  #scrollbar-thumb {
+    width: 28px;
+  }
+
+  #scrollbar-thumb::before {
+    width: 5px;
+    right: 4px;
+    opacity: .85;
+  }
+
+  #scrollbar-thumb.dragging::before {
+    width: 8px;
+    right: 3px;
+  }
 }
 
 /* 1. Remove/Anula o efeito padrão em todo o site (opcional, se quiser garantir que o resto fique padrão) */
@@ -76,9 +118,10 @@ html.custom-scroll::-webkit-scrollbar {
 h1::selection,
 h2::selection,
 h3::selection,
-p::selection,
-span::selection,
-a::selection {
+h4::selection,
+h5::selection,
+h6::selection,
+p::selection {
   background-color: var(--ink); /* Cor de fundo da seleção (ex: Pink) */
   color: var(--hl);           /* Cor do texto selecionado */
 }

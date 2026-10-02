@@ -258,8 +258,8 @@ if (isAndroid) {
 }
 // computador: mantém o href padrão (web, em nova aba)
 
-/* ---------- SCROLLBAR CUSTOM (só com mouse; no celular já é flutuante) ---------- */
-if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+/* ---------- SCROLLBAR CUSTOM (mouse: sempre visível; toque: aparece ao rolar e some) ---------- */
+{
     const root = document.documentElement
     const bar = document.createElement("div")
     const thumb = document.createElement("div")
@@ -271,10 +271,18 @@ if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
     root.classList.add("custom-scroll")
 
     const MIN_THUMB = 40
+    const HIDE_DELAY = 1200      // ms parado até sumir (só tem efeito no toque)
     let thumbH = 0
     let dragging = false
     let startY = 0
     let startScroll = 0
+    let hideTimer = 0
+
+    function showBar() {
+        bar.classList.add("active")
+        clearTimeout(hideTimer)
+        if (!dragging) hideTimer = setTimeout(() => bar.classList.remove("active"), HIDE_DELAY)
+    }
 
     function updateBar() {
         const view = root.clientHeight
@@ -282,8 +290,11 @@ if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
         if (total <= view) { bar.style.display = "none"; return }
         bar.style.display = ""
 
-        thumbH = Math.max(MIN_THUMB, (view * view) / total)
-        const top = (root.scrollTop / (total - view)) * (view - thumbH)
+        const track = bar.clientHeight
+        const max = total - view
+        thumbH = Math.max(MIN_THUMB, (track * view) / total)
+        // clamp: o "efeito elástico" do iOS passa do limite e não pode jogar a barra para fora
+        const top = clamp(root.scrollTop / max, 0, 1) * (track - thumbH)
         thumb.style.height = `${thumbH}px`
         thumb.style.transform = `translateY(${top}px)`
     }
@@ -295,24 +306,27 @@ if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
         thumb.setPointerCapture(e.pointerId)
         thumb.classList.add("dragging")
         root.style.scrollBehavior = "auto"     // sem "smooth" durante o arraste
+        showBar()
     })
 
     thumb.addEventListener("pointermove", e => {
         if (!dragging) return
-        const view = root.clientHeight
-        const ratio = (root.scrollHeight - view) / (view - thumbH)
+        const track = bar.clientHeight
+        const ratio = (root.scrollHeight - root.clientHeight) / (track - thumbH)
         root.scrollTop = startScroll + (e.clientY - startY) * ratio
     })
 
     const stopDrag = () => {
+        if (!dragging) return
         dragging = false
         thumb.classList.remove("dragging")
         root.style.scrollBehavior = ""
+        showBar()                               // reinicia a contagem para sumir
     }
     thumb.addEventListener("pointerup", stopDrag)
     thumb.addEventListener("pointercancel", stopDrag)
 
-    window.addEventListener("scroll", updateBar, { passive: true })
+    window.addEventListener("scroll", () => { updateBar(); showBar() }, { passive: true })
     window.addEventListener("resize", updateBar)
     new ResizeObserver(updateBar).observe(document.body)   // conteúdo que muda de altura
     updateBar()
