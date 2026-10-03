@@ -1,3 +1,29 @@
+/* intensidade dos movimentos: 1 = animado, 0 = parado (a transição faz o "pause" suave) */
+@property --mov {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+
+/* cores do azul da seção do celular (registradas para poder fazer transição) */
+@property --bz-a {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: rgba(6, 69, 121, .78);
+}
+
+@property --bz-b {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: rgba(21, 135, 214, .62);
+}
+
+@property --bz-v {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: rgba(255, 255, 255, .14);
+}
+
 :root {
   --blue: #064579;
   --blue-2: #1587d6;
@@ -150,6 +176,7 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   overflow-anchor: none;
+  transition: --mov .9s ease;
 }
 
 html,
@@ -209,12 +236,6 @@ body::before {
   bottom: -28vmax;
   right: -15vmax;
   animation: drift 24s ease-in-out infinite alternate-reverse;
-}
-
-@keyframes drift {
-  to {
-    transform: translate(12vmax, 8vmax) scale(1.15);
-  }
 }
 
 .sr-only {
@@ -348,60 +369,53 @@ footer a:focus-visible {
   }
 }
 
+@keyframes drift {
+  to {
+    transform: translate(calc(12vmax * var(--mov)), calc(8vmax * var(--mov))) scale(calc(1 + .15 * var(--mov)));
+  }
+}
+
 @keyframes bob {
   50% {
-    transform: translateY(-25px);
+    transform: translateY(calc(-25px * var(--mov)));
   }
 }
 
 @keyframes ring {
   0% {
-    box-shadow: 0 0 0 0 rgba(21, 135, 214, .6);
+    box-shadow: 0 0 0 0 rgba(21, 135, 214, calc(.6 * var(--mov)));
   }
 
   40%,
   100% {
-    box-shadow: 0 0 0 28px rgba(21, 135, 214, 0);
+    box-shadow: 0 0 0 calc(28px * var(--mov)) rgba(21, 135, 214, 0);
   }
 }
 
 @keyframes installAnimation {
-  0% {
-    transform: scale(1);
-  }
 
-  /* primeiro pulso */
-  10% {
-    transform: scale(1.15);
-  }
-
-  20% {
-    transform: scale(1);
-  }
-
-  /* segundo pulso */
-  30% {
-    transform: scale(1.15);
-  }
-
-  40% {
-    transform: scale(1);
-  }
-
-  /* pausa (até completar ~4s total) */
+  0%,
+  20%,
+  40%,
   100% {
     transform: scale(1);
+  }
+
+  10%,
+  30% {
+    transform: scale(calc(1 + .15 * var(--mov)));
   }
 }
 
 @keyframes formsShake {
 
   0%,
-  40% {
+  40%,
+  60%,
+  100% {
     transform: none;
   }
 
-  /* o pulso do botão de cima termina em 40%, aí começa a chacoalhada */
   44% {
     transform: rotate(-14deg) scale(1.3);
   }
@@ -416,11 +430,6 @@ footer a:focus-visible {
 
   56% {
     transform: rotate(5deg) scale(1.1);
-  }
-
-  60%,
-  100% {
-    transform: none;
   }
 }
 
@@ -450,13 +459,15 @@ main {
   padding: 32px 22px 56px;
   background: rgba(255, 255, 255, .25);
   backdrop-filter: blur(18px) saturate(1.4);
+  transition: background-color .8s ease, backdrop-filter .8s ease;
 }
 
 /* zona azul: começa o main, com a frase de chamada + celular animado */
 .blue-zone {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0) 65%, rgba(255, 255, 255, .14)),
-    linear-gradient(165deg, rgba(6, 69, 121, .78), rgba(21, 135, 214, .62));
+    linear-gradient(180deg, rgba(255, 255, 255, 0) 65%, var(--bz-v)),
+    linear-gradient(165deg, var(--bz-a), var(--bz-b));
+  transition: --bz-a .8s ease, --bz-b .8s ease, --bz-v .8s ease, backdrop-filter .8s ease, opacity .35s ease;
   backdrop-filter: blur(18px) saturate(1.4);
   border-radius: 32px 32px 0 0;
   box-shadow: 0 -16px 50px -10px rgba(6, 69, 121, .4);
@@ -491,6 +502,11 @@ main .content {
   backdrop-filter: blur(18px) saturate(1.4);
   border-radius: 32px;
   border: 1px solid #fff;
+}
+
+.js .intro p.reveal {
+  transition: opacity .9s cubic-bezier(.2, .9, .2, 1), transform .9s cubic-bezier(.2, .9, .2, 1),
+    background-color .8s ease, backdrop-filter .8s ease;
 }
 
 main h1,
@@ -799,6 +815,7 @@ body {
 
 /* ---------- BOTÕES FLUTUANTES (canto inferior esquerdo) ---------- */
 /* cores estimadas a partir das telas do app: ajuste aqui se quiser */
+
 .acess {
   --fab-forte: #2f8cb0;
   --fab-suave: #98cbde;
@@ -808,7 +825,7 @@ body {
   bottom: calc(14px + env(safe-area-inset-bottom, 0px));
   z-index: 60;
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: auto auto auto;
   gap: 10px;
 }
 
@@ -827,13 +844,39 @@ body {
   box-shadow: 0 6px 14px -2px rgba(6, 69, 121, .45);
 }
 
-.acess button:nth-child(1) { grid-column: 1; grid-row: 2; }
-.acess button:nth-child(2) { grid-column: 2; grid-row: 2; }
-.acess button:nth-child(3) { grid-column: 1; grid-row: 1; }
+.acess .forte {
+  background: var(--fab-forte);
+  color: #fff;
+}
 
-/* botão do menu: só existe no celular */
-.acess .menu { display: none; }
+/* posições: menu embaixo à esquerda, fontes à direita, pausa em cima */
+.acess .menu { grid-column: 1; grid-row: 2; position: relative; z-index: 2; }
+.acess button:nth-child(1) { grid-column: 2; grid-row: 2; transform: translateX(-62px) scale(.5); }
+.acess button:nth-child(2) { grid-column: 3; grid-row: 2; transform: translateX(-124px) scale(.5); }
+.acess button:nth-child(3) { grid-column: 1; grid-row: 1; transform: translateY(62px) scale(.5); }
 
+/* fechado: invisíveis e sem capturar toque ou foco */
+.acess button:not(.menu) {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .25s ease, visibility 0s .25s;
+}
+
+/* aberto: surgem de trás do botão, um após o outro */
+.acess.aberto button:not(.menu) {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition: opacity .25s ease var(--d, 0s), transform .35s cubic-bezier(.34, 1.56, .64, 1) var(--d, 0s), visibility 0s var(--d, 0s);
+}
+
+.acess.aberto button:nth-child(1) { --d: 0s; }
+.acess.aberto button:nth-child(2) { --d: .06s; }
+.acess.aberto button:nth-child(3) { --d: .12s; }
+
+/* ícones do botão do menu */
 .acess .menu svg {
   fill: none;
   stroke: currentColor;
@@ -841,50 +884,33 @@ body {
   stroke-linecap: round;
 }
 
-.acess .menu path {
-  transform-box: fill-box;
-  transform-origin: center;
-  transition: transform .3s ease, opacity .2s ease;
+.acess .menu .ic-acess circle {
+  fill: currentColor;
+  stroke: none;
 }
 
-.acess.aberto .menu .l1 { transform: translateY(6px) rotate(45deg); }
-.acess.aberto .menu .l2 { opacity: 0; }
-.acess.aberto .menu .l3 { transform: translateY(-6px) rotate(-45deg); }
+.acess .menu .ic-x { display: none; }
+.acess.aberto .menu .ic-acess { display: none; }
+.acess.aberto .menu .ic-x { display: block; }
 
-@media (max-width: 699px) {
-  .acess { grid-template-columns: auto auto auto; }
-
-  /* hambúrguer embaixo à esquerda; fontes à direita; pausa em cima */
-  .acess .menu { display: grid; grid-column: 1; grid-row: 2; position: relative; z-index: 2; }
-  .acess button:nth-child(1) { grid-column: 2; grid-row: 2; transform: translateX(-62px) scale(.5); }
-  .acess button:nth-child(2) { grid-column: 3; grid-row: 2; transform: translateX(-124px) scale(.5); }
-  .acess button:nth-child(3) { grid-column: 1; grid-row: 1; transform: translateY(62px) scale(.5); }
-
-  /* fechado: invisíveis e sem capturar toque ou foco */
-  .acess button:not(.menu) {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity .2s ease, transform .25s ease, visibility 0s .25s;
-  }
-
-  /* aberto: surgem de trás do hambúrguer, um após o outro */
-  .acess.aberto button:not(.menu) {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: none;
-    transition: opacity .25s ease var(--d, 0s), transform .35s cubic-bezier(.34, 1.56, .64, 1) var(--d, 0s), visibility 0s var(--d, 0s);
-  }
-
-  .acess.aberto button:nth-child(1) { --d: 0s; }
-  .acess.aberto button:nth-child(2) { --d: .06s; }
-  .acess.aberto button:nth-child(3) { --d: .12s; }
+/* no limite (menor ou maior tamanho): cinza, como no app */
+.acess button[aria-disabled="true"] {
+  background: #e0e0e0;
+  color: #7b7b7b;
+  box-shadow: 0 4px 10px -2px rgba(0, 0, 0, .2);
+  cursor: default;
 }
 
-.acess .forte {
-  background: var(--fab-forte);
-  color: #fff;
+.acess button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--blue);
+}
+
+.acess svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
 }
 
 /* no limite (menor ou maior tamanho): cinza, como no app */
@@ -907,21 +933,30 @@ body {
   fill: currentColor;
 }
 
-/* ---------- MODO SEM ANIMAÇÕES (celulares antigos / "reduzir movimento") ---------- */
+/* ---------- MODO SEM ANIMAÇÕES ---------- */
 html.lite {
   scroll-behavior: auto;
+  --mov: 0;
+  /* os movimentos "desaceleram" até zero */
 }
 
-/* no modo pausado, os ícones ainda aparecem com fade suave (e depois ficam parados) */
+/* só corta de vez depois que a desaceleração terminou (classe .parado, via JS) */
+html.lite.parado *,
+html.lite.parado *::before,
+html.lite.parado *::after {
+  animation: none !important;
+}
+
+/* transições só ficam desligadas em repouso; durante a troca (.trocando) elas valem */
+html.lite:not(.trocando) *,
+html.lite:not(.trocando) *::before,
+html.lite:not(.trocando) *::after {
+  transition: none !important;
+}
+
+/* os ícones sempre têm o fade suave */
 html.lite .icons {
   transition: opacity 1s ease, transform 1s cubic-bezier(.34, 1.56, .64, 1) !important;
-}
-
-html.lite *,
-html.lite *::before,
-html.lite *::after {
-  animation: none !important;
-  transition: none !important;
 }
 
 html.lite .reveal {
@@ -929,25 +964,46 @@ html.lite .reveal {
   transform: none !important;
 }
 
-/* a seção do celular vira uma tela só, com o frame fixo */
-html.lite .showcase {
+/* a seção do celular vira uma tela só (o JS troca esta classe no meio do fade) */
+html.lite-layout .showcase {
   height: auto;
 }
 
-html.lite .showcase-stage {
+html.lite-layout .showcase-stage {
   position: relative;
 }
 
-/* sem desfoque de fundo (pesado em celular antigo), com fundo mais firme para manter a leitura */
+/* vidro fosco "esvazia" suavemente (blur(0) interpola; "none" não) */
 html.lite .sheet,
 html.lite .intro p {
-  backdrop-filter: none;
+  backdrop-filter: blur(0px) saturate(1);
   background: rgba(255, 255, 255, .82);
 }
 
 html.lite .blue-zone {
-  backdrop-filter: none;
-  background: linear-gradient(165deg, rgba(6, 69, 121, .8), rgba(21, 135, 214, .65));
+  --bz-a: rgba(6, 69, 121, .8);
+  --bz-b: rgba(21, 135, 214, .65);
+  --bz-v: rgba(255, 255, 255, 0);
+  backdrop-filter: blur(0px) saturate(1);
+}
+
+/* crossfade do conteúdo da seção do celular */
+#phone-canvas,
+.phrases {
+  transition: opacity .6s ease;
+}
+
+.showcase-box.xf #phone-canvas,
+.showcase-box.xf .phrases {
+  opacity: 0;
+  transition: none;
+}
+
+.xf-foto {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* ---------- PARA QUEM É (cartões com os ícones) ---------- */
@@ -1038,11 +1094,25 @@ body:has(dialog[open]) {
 }
 
 /* depois do 1º uso do pause/play, a animação de entrada não repete; só os loops continuam */
-html.entrou #logo { animation: bob 6s ease-in-out infinite; }
-html.entrou #install { animation: installAnimation 4s infinite; }
-html.entrou #install::before { animation: ring 4s infinite; }
-html.entrou #forms { animation: none; }
-html.entrou #forms img { animation: formsShake 4s infinite; }
+html.entrou #logo {
+  animation: bob 6s ease-in-out infinite;
+}
+
+html.entrou #install {
+  animation: installAnimation 4s infinite;
+}
+
+html.entrou #install::before {
+  animation: ring 4s infinite;
+}
+
+html.entrou #forms {
+  animation: none;
+}
+
+html.entrou #forms img {
+  animation: formsShake 4s infinite;
+}
 
 /* ---------- CELULAR: texto acima, imagens abaixo, conjunto centralizado ---------- */
 @media (max-width: 699px) {

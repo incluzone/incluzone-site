@@ -10,7 +10,9 @@ const salvo = ler("iz-lite")
 let lite = salvo === null ? matchMedia("(prefers-reduced-motion: reduce)").matches : salvo === "1"
 root.dataset.fonte = fonte
 root.classList.toggle("lite", lite)
+root.classList.toggle("lite-layout", lite)
 if (lite) root.classList.add("entrou")   // abriu já pausado: nunca verá a entrada animar depois
+let tParado = 0, tTroca = 0, tFade = 0
 
 /* ---------- ÍCONES: aparecem, ficam um tempo e somem para reaparecer em outro lugar ---------- */
 const srcImages = [
@@ -140,7 +142,7 @@ let loadToken = 0
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v))
 const FRAME_FIXO = 0.3   // ponto do vídeo (0 a 1) em que a 1ª frase aparece inteira
-const semAnimacao = () => document.documentElement.classList.contains("lite")
+const semAnimacao = () => root.classList.contains("lite-layout")
 
 // sobe de 0 a 1 entre a e b, fica em 1 até c e desce a 0 em d
 const seg = (p, a, b, c, d) => {
@@ -509,6 +511,47 @@ function marcarVistos() {
     })
 }
 
+/* crossfade da seção do celular: a "foto" do que está na tela some enquanto o novo aparece */
+function trocarSecao(mudanca) {
+    const box = document.querySelector(".showcase-box")
+    const frasesOriginal = box.querySelector(".phrases")
+    const b = box.getBoundingClientRect()
+    const pos = el => {
+        const r = el.getBoundingClientRect()
+        return {
+            position: "absolute", margin: "0",
+            left: `${r.left - b.left}px`, top: `${r.top - b.top}px`,
+            width: `${r.width}px`, height: `${r.height}px`
+        }
+    }
+
+    const foto = document.createElement("div")
+    foto.className = "xf-foto"
+    foto.setAttribute("aria-hidden", "true")
+
+    const copiaCanvas = document.createElement("canvas")
+    copiaCanvas.width = canvas.width
+    copiaCanvas.height = canvas.height
+    copiaCanvas.getContext("2d").drawImage(canvas, 0, 0)
+    Object.assign(copiaCanvas.style, pos(canvas))
+
+    const copiaFrases = frasesOriginal.cloneNode(true)
+    Object.assign(copiaFrases.style, pos(frasesOriginal))
+
+    foto.append(copiaCanvas, copiaFrases)
+    box.appendChild(foto)
+
+    box.classList.add("xf")      // o conteúdo novo começa invisível
+    mudanca()                    // troca o layout e os frames por baixo da foto
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        foto.style.transition = "opacity .6s ease"
+        box.classList.remove("xf")   // novo aparece...
+        foto.style.opacity = "0"     // ...enquanto a foto some
+        setTimeout(() => foto.remove(), 700)
+    }))
+}
+
 const NOMES = { 1: "normal", 2: "grande", 3: "muito grande" }
 const SVG_PAUSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>'
 const SVG_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>'
@@ -522,7 +565,10 @@ box.innerHTML = `
         <button type="button" class="forte" aria-label="Aumentar o tamanho do texto">A+</button>
         <button type="button"></button>
         <button type="button" class="forte menu" aria-expanded="false" aria-label="Abrir ajustes de acessibilidade">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path class="l1" d="M4 6h16"/><path class="l2" d="M4 12h16"/><path class="l3" d="M4 18h16"/></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="ic-acess">
+  <circle cx="12" cy="4.5" r="2.8" fill="currentColor" stroke="none"/>
+  <path d="M5 8.5h14M12 8.5V13m0 0-3.5 7M12 13l3.5 7"/>
+</svg><svg class="ic-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
         <span class="sr-only" role="status" aria-live="polite"></span>`
 document.body.appendChild(box)
@@ -531,6 +577,13 @@ const [menos, mais, anim, menu, aviso] = box.children
 function aplicar(msg) {
     root.dataset.fonte = fonte
     root.classList.toggle("lite", lite)
+    clearTimeout(tParado)
+    if (lite) {
+        // espera a desaceleração (0,9s) antes de cortar as animações de vez
+        tParado = setTimeout(() => root.classList.add("parado"), root.classList.contains("trocando") ? 900 : 0)
+    } else {
+        root.classList.remove("parado")
+    }
     menos.setAttribute("aria-disabled", fonte <= 1)
     mais.setAttribute("aria-disabled", fonte >= 3)
 
@@ -556,14 +609,19 @@ menos.addEventListener("click", () => mudarFonte(-1))
 mais.addEventListener("click", () => mudarFonte(1))
 
 anim.addEventListener("click", () => {
-    root.classList.add("entrou")
-    if (lite) marcarVistos()     // vai dar play: o que já foi visto não anima de novo
-    preservarPosicao(() => {
-        lite = !lite
-        guardar("iz-lite", lite ? "1" : "0")
+    root.classList.add("entrou", "trocando")
+    clearTimeout(tTroca)
+    tTroca = setTimeout(() => root.classList.remove("trocando"), 1300)
+
+    if (lite) marcarVistos()           // vai dar play: o que já foi visto não anima de novo
+    lite = !lite
+    guardar("iz-lite", lite ? "1" : "0")
+
+    trocarSecao(() => {
         aplicar(lite ? "Animações pausadas" : "Animações ativadas")
+        preservarPosicao(() => root.classList.toggle("lite-layout", lite))
+        document.dispatchEvent(new Event("iz-lite"))     // recarrega frames e reinicia os ícones
     })
-    document.dispatchEvent(new Event("iz-lite"))
 })
 
 function abrirMenu(abrir) {
