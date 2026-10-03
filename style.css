@@ -5,8 +5,9 @@
   --ink: #10263a;
   --hl: #8fe0ff;
   /* destaque sobre o fundo azul */
-  --peek: 50px;
+  --peek: 100px;
   /* quanto do conteúdo aparece embaixo do hero */
+  --escala: 1;
 }
 
 /* esconde a scrollbar nativa só quando a custom está ativa */
@@ -38,7 +39,8 @@ html.custom-scroll::-webkit-scrollbar {
   width: 18px;
   pointer-events: auto;
   cursor: grab;
-  touch-action: none;   /* o arraste não vira rolagem da página */
+  touch-action: none;
+  /* o arraste não vira rolagem da página */
 }
 
 /* parte visível: é ela que muda de tamanho */
@@ -78,7 +80,8 @@ html.custom-scroll::-webkit-scrollbar {
 }
 
 /* celular/tablet: aparece ao rolar e some depois */
-@media (hover: none), (pointer: coarse) {
+@media (hover: none),
+(pointer: coarse) {
   #scrollbar {
     opacity: 0;
   }
@@ -112,7 +115,8 @@ html.custom-scroll::-webkit-scrollbar {
 
 /* 1. Remove/Anula o efeito padrão em todo o site (opcional, se quiser garantir que o resto fique padrão) */
 ::selection {
-  background: transparent; /* ou mantenha o padrão do navegador se preferir */
+  background: transparent;
+  /* ou mantenha o padrão do navegador se preferir */
   color: inherit;
 }
 
@@ -124,8 +128,10 @@ h4::selection,
 h5::selection,
 h6::selection,
 p::selection {
-  background-color: var(--ink); /* Cor de fundo da seleção (ex: Pink) */
-  color: var(--hl);           /* Cor do texto selecionado */
+  background-color: var(--ink);
+  /* Cor de fundo da seleção (ex: Pink) */
+  color: var(--hl);
+  /* Cor do texto selecionado */
 }
 
 img {
@@ -143,6 +149,7 @@ img {
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  overflow-anchor: none;
 }
 
 html,
@@ -388,23 +395,31 @@ footer a:focus-visible {
 }
 
 @keyframes formsShake {
-  0%, 40% {
+
+  0%,
+  40% {
     transform: none;
   }
+
   /* o pulso do botão de cima termina em 40%, aí começa a chacoalhada */
   44% {
     transform: rotate(-14deg) scale(1.3);
   }
+
   48% {
     transform: rotate(12deg) scale(1.3);
   }
+
   52% {
     transform: rotate(-8deg) scale(1.2);
   }
+
   56% {
     transform: rotate(5deg) scale(1.1);
   }
-  60%, 100% {
+
+  60%,
+  100% {
     transform: none;
   }
 }
@@ -439,7 +454,9 @@ main {
 
 /* zona azul: começa o main, com a frase de chamada + celular animado */
 .blue-zone {
-  background: linear-gradient(165deg, rgba(6, 69, 121, .42), rgba(21, 135, 214, .22));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0) 65%, rgba(255, 255, 255, .14)),
+    linear-gradient(165deg, rgba(6, 69, 121, .78), rgba(21, 135, 214, .62));
   backdrop-filter: blur(18px) saturate(1.4);
   border-radius: 32px 32px 0 0;
   box-shadow: 0 -16px 50px -10px rgba(6, 69, 121, .4);
@@ -541,8 +558,8 @@ main h2 {
   --o: 0;
   --t: 0px;
   position: absolute;
-  top: 45%;
-  translate: 0 -50%;
+  top: 50%;
+  translate: 0 -100%;
   width: 36%;
   margin: 0;
   font-size: 2.8cqw;
@@ -753,6 +770,255 @@ footer p {
   box-shadow: 0 0 0 6px var(--blue);
 }
 
+
+/* ---------- TAMANHO DO TEXTO (A- / A+) ---------- */
+html[data-fonte="2"] {
+  --escala: 1.12;
+}
+
+html[data-fonte="3"] {
+  --escala: 1.25;
+}
+
+html,
+body {
+  font-size: calc(17px * var(--escala));
+}
+
+@media (min-width: 700px) {
+
+  html,
+  body {
+    font-size: calc(18px * var(--escala));
+  }
+
+  .showcase p.phrase {
+    font-size: calc(2.8cqw * var(--escala));
+  }
+}
+
+/* ---------- BOTÕES FLUTUANTES (canto inferior esquerdo) ---------- */
+/* cores estimadas a partir das telas do app: ajuste aqui se quiser */
+.acess {
+  --fab-forte: #2f8cb0;
+  --fab-suave: #98cbde;
+  --fab-texto: #0b4a63;
+  position: fixed;
+  left: calc(14px + env(safe-area-inset-left, 0px));
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 10px;
+}
+
+.acess button {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--fab-suave);
+  color: var(--fab-texto);
+  font: 700 18px/1 'Atkinson Hyperlegible', Arial, Helvetica, sans-serif;
+  cursor: pointer;
+  box-shadow: 0 6px 14px -2px rgba(6, 69, 121, .45);
+}
+
+.acess button:nth-child(1) { grid-column: 1; grid-row: 2; }
+.acess button:nth-child(2) { grid-column: 2; grid-row: 2; }
+.acess button:nth-child(3) { grid-column: 1; grid-row: 1; }
+
+/* botão do menu: só existe no celular */
+.acess .menu { display: none; }
+
+.acess .menu svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.acess .menu path {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform .3s ease, opacity .2s ease;
+}
+
+.acess.aberto .menu .l1 { transform: translateY(6px) rotate(45deg); }
+.acess.aberto .menu .l2 { opacity: 0; }
+.acess.aberto .menu .l3 { transform: translateY(-6px) rotate(-45deg); }
+
+@media (max-width: 699px) {
+  .acess { grid-template-columns: auto auto auto; }
+
+  /* hambúrguer embaixo à esquerda; fontes à direita; pausa em cima */
+  .acess .menu { display: grid; grid-column: 1; grid-row: 2; position: relative; z-index: 2; }
+  .acess button:nth-child(1) { grid-column: 2; grid-row: 2; transform: translateX(-62px) scale(.5); }
+  .acess button:nth-child(2) { grid-column: 3; grid-row: 2; transform: translateX(-124px) scale(.5); }
+  .acess button:nth-child(3) { grid-column: 1; grid-row: 1; transform: translateY(62px) scale(.5); }
+
+  /* fechado: invisíveis e sem capturar toque ou foco */
+  .acess button:not(.menu) {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .25s ease, visibility 0s .25s;
+  }
+
+  /* aberto: surgem de trás do hambúrguer, um após o outro */
+  .acess.aberto button:not(.menu) {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition: opacity .25s ease var(--d, 0s), transform .35s cubic-bezier(.34, 1.56, .64, 1) var(--d, 0s), visibility 0s var(--d, 0s);
+  }
+
+  .acess.aberto button:nth-child(1) { --d: 0s; }
+  .acess.aberto button:nth-child(2) { --d: .06s; }
+  .acess.aberto button:nth-child(3) { --d: .12s; }
+}
+
+.acess .forte {
+  background: var(--fab-forte);
+  color: #fff;
+}
+
+/* no limite (menor ou maior tamanho): cinza, como no app */
+.acess button[aria-disabled="true"] {
+  background: #e0e0e0;
+  color: #7b7b7b;
+  box-shadow: 0 4px 10px -2px rgba(0, 0, 0, .2);
+  cursor: default;
+}
+
+.acess button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--blue);
+}
+
+.acess svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+/* ---------- MODO SEM ANIMAÇÕES (celulares antigos / "reduzir movimento") ---------- */
+html.lite {
+  scroll-behavior: auto;
+}
+
+/* no modo pausado, os ícones ainda aparecem com fade suave (e depois ficam parados) */
+html.lite .icons {
+  transition: opacity 1s ease, transform 1s cubic-bezier(.34, 1.56, .64, 1) !important;
+}
+
+html.lite *,
+html.lite *::before,
+html.lite *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+html.lite .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* a seção do celular vira uma tela só, com o frame fixo */
+html.lite .showcase {
+  height: auto;
+}
+
+html.lite .showcase-stage {
+  position: relative;
+}
+
+/* sem desfoque de fundo (pesado em celular antigo), com fundo mais firme para manter a leitura */
+html.lite .sheet,
+html.lite .intro p {
+  backdrop-filter: none;
+  background: rgba(255, 255, 255, .82);
+}
+
+html.lite .blue-zone {
+  backdrop-filter: none;
+  background: linear-gradient(165deg, rgba(6, 69, 121, .8), rgba(21, 135, 214, .65));
+}
+
+/* ---------- PARA QUEM É (cartões com os ícones) ---------- */
+.publico {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin: 0 0 28px;
+  list-style: none;
+}
+
+.publico li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 12px;
+  text-align: center;
+  background: rgba(255, 255, 255, .5);
+  border: 1px solid #fff;
+  border-radius: 24px;
+  box-shadow: 0 10px 24px -14px rgba(6, 69, 121, .5);
+}
+
+.publico img {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 4px;
+  object-fit: contain;
+}
+
+.publico strong {
+  font-size: 1.1rem;
+  line-height: 1.1;
+  color: var(--blue);
+}
+
+.publico span {
+  font-size: .875rem;
+  line-height: 1.35;
+}
+
+/* ---------- TECNOLOGIAS (OpenStreetMap e Gemini) ---------- */
+.tecnologias {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+  margin: 0 0 20px;
+  list-style: none;
+}
+
+.tecnologias li {
+  display: flex;
+  justify-content: center;
+  /* novo */
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px 8px 10px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, .55);
+  border: 1px solid #fff;
+  color: var(--blue);
+  font-size: .95rem;
+  font-weight: 700;
+}
+
+.tecnologias img {
+  width: 35px;
+  object-fit: contain;
+}
+
 /* trava a rolagem do site enquanto o diálogo está aberto */
 body:has(dialog[open]) {
   overflow: hidden;
@@ -770,6 +1036,13 @@ body:has(dialog[open]) {
     opacity: 0;
   }
 }
+
+/* depois do 1º uso do pause/play, a animação de entrada não repete; só os loops continuam */
+html.entrou #logo { animation: bob 6s ease-in-out infinite; }
+html.entrou #install { animation: installAnimation 4s infinite; }
+html.entrou #install::before { animation: ring 4s infinite; }
+html.entrou #forms { animation: none; }
+html.entrou #forms img { animation: formsShake 4s infinite; }
 
 /* ---------- CELULAR: texto acima, imagens abaixo, conjunto centralizado ---------- */
 @media (max-width: 699px) {
@@ -816,13 +1089,8 @@ body:has(dialog[open]) {
 /* ---------- TELAS MAIORES ---------- */
 @media (min-width: 700px) {
 
-  html,
-  body {
-    font-size: 18px;
-  }
-
   :root {
-    --peek: 85px;
+    --peek: 100px;
   }
 
   .sheet {
@@ -846,7 +1114,7 @@ body:has(dialog[open]) {
   }
 
   .showcase {
-    height: 700svh;  
+    height: 700svh;
   }
 }
 
